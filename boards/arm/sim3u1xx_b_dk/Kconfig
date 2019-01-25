@@ -1,0 +1,19 @@
+# Kconfig - SIM3U1XX-B-DK board configuration
+#
+# Copyright (c) 2019 Christian Taedcke
+#
+# SPDX-License-Identifier: Apache-2.0
+
+if BOARD_SIM3U1XX_B_DK
+
+config BOARD_INIT_PRIORITY
+	int
+
+	# omit prompt to signify a "hidden" option
+	default KERNEL_INIT_PRIORITY_DEFAULT
+	depends on GPIO
+	help
+	  Board initialization priority. This must be bigger than
+	  GPIO_SIM3_COMMON_INIT_PRIORITY.
+
+endif # BOARD_SIM3U1XX_B_DK

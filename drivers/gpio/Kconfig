@@ -62,6 +62,8 @@ source "drivers/gpio/Kconfig.sam0"
 
 source "drivers/gpio/Kconfig.sam"
 
+source "drivers/gpio/Kconfig.sim3"
+
 source "drivers/gpio/Kconfig.sx1509b"
 
 source "drivers/gpio/Kconfig.imx"

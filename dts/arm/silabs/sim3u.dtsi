@@ -1,0 +1,131 @@
+#include <arm/armv7-m.dtsi>
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		cpu@0 {
+			compatible = "arm,cortex-m3";
+			reg = <0>;
+		};
+	};
+
+	sram0: memory@20000000 {
+		device_type = "memory";
+		compatible = "mmio-sram";
+	};
+
+	aliases {
+		usart-0 = &usart0;
+		usart-1 = &usart1;
+		uart-0 = &uart0;
+		uart-1 = &uart1;
+	};
+
+	soc {
+		flash-controller@4002e000 {
+			compatible = "silabs,sim3-flash-controller";
+			label = "FLASH_CTRL";
+			reg = <0x4002e000 0xe0>;
+
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			flash0: flash@0 {
+				compatible = "soc-nv-flash";
+				label = "FLASH_0";
+				write-block-size = <4>;
+			};
+		};
+
+		usart0: usart@40000000 { /* USART0 */
+			compatible = "silabs,sim3-usart";
+			reg = <0x40000000 0x80>;
+			interrupts = <27 0>;
+			status = "disabled";
+			label = "USART_0";
+		};
+
+		usart1: usart@40001000 { /* USART1 */
+			compatible = "silabs,sim3-usart";
+			reg = <0x40001000 0x80>;
+			interrupts = <28 0>;
+			status = "disabled";
+			label = "USART_1";
+		};
+
+		uart0: uart@40002000 { /* UART0 */
+			compatible = "silabs,sim3-uart";
+			reg = <0x40002000 0x80>;
+			interrupts = <46 0>;
+			status = "disabled";
+			label = "UART_0";
+		};
+
+		uart1: uart@40003000 { /* UART1 */
+			compatible = "silabs,sim3-uart";
+			reg = <0x40003000 0x80>;
+			interrupts = <47 0>;
+			status = "disabled";
+			label = "UART_1";
+		};
+
+		gpio@40002a00 {
+			compatible = "silabs,sim3-gpio";
+			reg = <0x40002a00 0x60>;
+			interrupts = <1 2>, <2 2>, <45 2>;
+			interrupt-names = "PBEXT0", "PBEXT1", "PMATCH0";
+			label = "GPIO";
+
+			ranges;
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			gpio0: gpio@4002a0a0 {
+				compatible = "silabs,sim3-gpio-port";
+				reg = <0x4002a0a0 0x90>;
+				label = "GPIO_0";
+				gpio-controller;
+				#gpio-cells = <2>;
+			};
+
+			gpio1: gpio@4002a140 {
+				compatible = "silabs,sim3-gpio-port";
+				reg = <0x4002a140 0x90>;
+				label = "GPIO_1";
+				gpio-controller;
+				#gpio-cells = <2>;
+			};
+
+			gpio2: gpio@4002a1e0 {
+				compatible = "silabs,sim3-gpio-port";
+				reg = <0x4002a1e0 0x90>;
+				label = "GPIO_2";
+				gpio-controller;
+				#gpio-cells = <2>;
+			};
+
+			gpio3: gpio@4002a320 {
+				compatible = "silabs,sim3-gpio-port";
+				reg = <0x4002a320 0x90>;
+				label = "GPIO_3";
+				gpio-controller;
+				#gpio-cells = <2>;
+			};
+
+			gpio4: gpio@4002a3c0 {
+				compatible = "silabs,sim3-gpio-port";
+				reg = <0x4002a3c0 0x90>;
+				label = "GPIO_4";
+				gpio-controller;
+				#gpio-cells = <2>;
+			};
+		};
+	};
+};
+
+&nvic {
+	arm,num-irq-priority-bits = <4>;
+};

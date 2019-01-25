@@ -1,0 +1,44 @@
+# Kconfig - Sim3 UART
+#
+# Copyright (c) 2019, Christian Taedcke
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+menuconfig UART_SIM3
+	bool "Sim3 UART/USART driver"
+	depends on SOC_FAMILY_SIM3
+	depends on GPIO_SIM3
+	select SERIAL_HAS_DRIVER
+	select SERIAL_SUPPORT_INTERRUPT
+	select SOC_SIM3_USART
+	help
+	  Enable the Sim3 uart driver.
+
+if UART_SIM3
+
+config UART_SIM3_0
+	bool "Enable Sim3 UART 0"
+	help
+	  Enable support for Sim3 UART0 port in the driver. Say y here if you
+	  want to use UART0 device.
+
+config UART_SIM3_1
+	bool "Enable Sim3 UART 1"
+	help
+	  Enable support for Sim3 UART1 port in the driver. Say y here if you
+	  want to use UART1 device.
+
+config USART_SIM3_0
+	bool "Enable Sim3 USART 0"
+	help
+	  Enable support for Sim3 USART0 port in the driver. Say y here if you
+	  want to use USART0 device.
+
+config USART_SIM3_1
+	bool "Enable Sim3 USART 1"
+	help
+	  Enable support for Sim3 USART1 port in the driver. Say y here if you
+	  want to use USART1 device.
+
+endif # UART_SIM3

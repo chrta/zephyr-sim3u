@@ -174,6 +174,13 @@ SECTIONS
 	_vector_end = .;
 	} GROUP_LINK_IN(ROMABLE_REGION)
 
+#if defined(CONFIG_SOC_SERIES_SIM3U) && !defined(CONFIG_IS_BOOTLOADER)
+	 SECTION_PROLOGUE(_TEXT_SECTION_NAME_VERSION,0x2118,)
+	{
+	*(.version)
+	} GROUP_LINK_IN(ROMABLE_REGION)
+#endif
+
 #ifdef CONFIG_CODE_DATA_RELOCATION
 
 #include <linker_relocate.ld>
@@ -316,6 +323,19 @@ SECTIONS
         _ram_vector_start = .;
         . += _vector_end - _vector_start;
         _ram_vector_end = .;
+	} GROUP_DATA_LINK_IN(RAMABLE_REGION, RAMABLE_REGION)
+#endif
+
+#if defined(CONFIG_SOC_SERIES_SIM3U) && !defined(CONFIG_IS_BOOTLOADER)
+    /* Must be first in ramable region */
+	SECTION_PROLOGUE(.info,(NOLOAD),)
+	{
+	*(.info)
+	} GROUP_DATA_LINK_IN(RAMABLE_REGION, RAMABLE_REGION)
+
+SECTION_PROLOGUE(.retain,(NOLOAD),)
+	{
+	*(.retain)
 	} GROUP_DATA_LINK_IN(RAMABLE_REGION, RAMABLE_REGION)
 #endif
 

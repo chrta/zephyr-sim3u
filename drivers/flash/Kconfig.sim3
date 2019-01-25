@@ -1,0 +1,16 @@
+# Kconfig - Silicon Labs Sim3 flash driver config
+#
+# Copyright (c) 2019, Christian Taedcke
+#
+# SPDX-License-Identifier: Apache-2.0
+
+config SOC_FLASH_SIM3
+	bool "Silicon Labs Sim3 flash driver"
+	depends on FLASH && SOC_FAMILY_SIM3
+	select FLASH_HAS_DRIVER_ENABLED
+	help
+	  Enable Silicon Labs Sim3 series internal flash driver.
+
+if SOC_FLASH_SIM3
+
+endif # SOC_FLASH_SIM3

@@ -1,0 +1,11 @@
+# Kconfig - SIM3U1XX-B-DK board
+#
+# Copyright (c) 2019, Christian Taedcke
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+config BOARD_SIM3U1XX_B_DK
+	bool "SiLabs SIM3U1XX-B-DK"
+	depends on SOC_SERIES_SIM3U
+	select SOC_PART_NUMBER_SIM3U167_A_GM

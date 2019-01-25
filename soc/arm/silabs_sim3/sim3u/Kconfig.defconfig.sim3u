@@ -1,0 +1,32 @@
+# Kconfig - Silicon Labs SIM3U configuration options
+
+#
+# Copyright (c) 2019 Christian Taedcke
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+if SOC_SERIES_SIM3U
+
+if GPIO
+
+config GPIO_SIM3
+	default y
+
+endif # GPIO
+
+if SERIAL
+
+config UART_SIM3
+	default y
+
+endif # SERIAL
+
+if FLASH
+
+config SOC_FLASH_SIM3
+	default y
+
+endif # FLASH
+
+endif # SOC_SERIES_SIM3U

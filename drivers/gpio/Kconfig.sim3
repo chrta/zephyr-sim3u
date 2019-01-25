@@ -1,0 +1,46 @@
+# Kconfig.sim3 - Sim3 GPIO configuration options
+#
+# Copyright (c) 2019 Christian Taedcke
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+menuconfig GPIO_SIM3
+	bool "Sim3 GPIO driver"
+	depends on GPIO && SOC_FAMILY_SIM3
+	select HAS_DTS_GPIO
+	help
+	  Enable the Gecko gpio driver.
+
+if GPIO_SIM3
+
+config GPIO_SIM3_COMMON_INIT_PRIORITY
+	int "Common initialization priority"
+	default 39
+
+config GPIO_SIM3_PORT0
+	bool "Port 0"
+	help
+	  Enable Port Bank PB0.
+
+config GPIO_SIM3_PORT1
+	bool "Port 1"
+	help
+	  Enable Port Bank PB1.
+
+config GPIO_SIM3_PORT2
+	bool "Port 2"
+	help
+	  Enable Port Bank PB2.
+
+config GPIO_SIM3_PORT3
+	bool "Port 3"
+	help
+	  Enable Port Bank PB3.
+
+config GPIO_SIM3_PORT4
+	bool "Port 4"
+	help
+	  Enable Port Bank PB4.
+
+endif # GPIO_SIM3

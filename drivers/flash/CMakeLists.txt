@@ -22,6 +22,8 @@ if(CONFIG_CLOCK_CONTROL_STM32_CUBE)
   zephyr_sources_ifdef(CONFIG_SOC_SERIES_STM32L4X flash_stm32l4x.c)
 endif()
 
+zephyr_library_sources_ifdef(CONFIG_SOC_FLASH_SIM3 flash_sim3.c)
+
 zephyr_include_directories_ifdef(
 	CONFIG_SOC_FLASH_NRF_RADIO_SYNC
 	${ZEPHYR_BASE}/subsys/bluetooth

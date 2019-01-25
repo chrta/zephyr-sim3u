@@ -1,0 +1,13 @@
+# Kconfig - SIM3U MCU line
+#
+# Copyright (c) 2019 Christian Taedcke
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+if SOC_SERIES_SIM3U
+
+config SOC_PART_NUMBER_SIM3U167AGM
+	bool
+
+endif # SOC_SERIES_SIM3U

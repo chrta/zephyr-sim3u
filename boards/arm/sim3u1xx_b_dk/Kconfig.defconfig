@@ -1,0 +1,27 @@
+# Kconfig - SIM3U1XX-B-DK board
+#
+# Copyright (c) 2019, Christian Taedcke
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+if BOARD_SIM3U1XX_B_DK
+
+config BOARD
+	default "sim3u1xx_b_dk"
+
+if GPIO_SIM3
+
+config GPIO_SIM3_PORT2
+	default y
+
+endif # GPIO_SIM3
+
+if UART_SIM3
+
+config UART_SIM3_0
+	default y
+
+endif # UART_SIM3
+
+endif # BOARD_SIM3U1XX_B_DK
