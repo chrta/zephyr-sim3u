@@ -52,7 +52,7 @@ static int silabs_sim3u_init(struct device *arg)
 	oldLevel = irq_lock();
 
 	/* disable watchdog reset source */
-	RSTSRC_0->RESETEN.bit.WDTREN = 0;
+	RSTSRC0->RESETEN_b.WDTREN = 0;
 
 	_ClearFaults();
 

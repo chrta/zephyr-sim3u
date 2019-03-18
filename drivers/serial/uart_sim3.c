@@ -29,7 +29,7 @@ struct uart_sim3_data {
 static int uart_sim3_poll_in(struct device *dev, unsigned char *c)
 {
 	const struct uart_sim3_config *config = dev->config->config_info;
-	u8_t fifo_count = config->base->FIFOCN.bit.RCNT;
+	u8_t fifo_count = config->base->FIFOCN_b.RCNT;
 
 	if (fifo_count) {
 	    *c = config->base->DATA.U8;
@@ -44,7 +44,7 @@ static void uart_sim3_poll_out(struct device *dev, unsigned char c)
 	const struct uart_sim3_config *config = dev->config->config_info;
 
 	/* Wait for transmitter fifo to be empty */
-	while (config->base->FIFOCN.bit.TCNT)
+	while (config->base->FIFOCN_b.TCNT)
 		;
 
 
@@ -54,7 +54,7 @@ static void uart_sim3_poll_out(struct device *dev, unsigned char c)
 static int uart_sim3_err_check(struct device *dev)
 {
 	const struct uart_sim3_config *config = dev->config->config_info;
-	u32_t flags = config->base->CONTROL.reg;
+	u32_t flags = config->base->CONTROL;
 	int err = 0;
 
 	if (flags & UART_CONTROL_ROREI_Msk) {
@@ -81,7 +81,7 @@ static int uart_sim3_fifo_fill(struct device *dev, const u8_t *tx_data,
 	const struct uart_sim3_config *config = dev->config->config_info;
 	u8_t num_tx = 0U;
 
-	while ((len - num_tx > 0) && (config->base->FIFOCN.bit.TCNT == 0)) {
+	while ((len - num_tx > 0) && (config->base->FIFOCN_b.TCNT == 0)) {
 		config->base->DATA.U8 = tx_data[num_tx++];
 	}
 
@@ -95,7 +95,7 @@ static int uart_sim3_fifo_read(struct device *dev, u8_t *rx_data,
 	u8_t num_rx = 0U;
 
 	while ((len - num_rx > 0) &&
-	       (num_rx < config->base->FIFOCN.bit.RCNT)) {
+	       (num_rx < config->base->FIFOCN_b.RCNT)) {
 
 		rx_data[num_rx++] = config->base->DATA.U8;
 	}
@@ -121,7 +121,7 @@ static void uart_sim3_irq_tx_disable(struct device *dev)
 static int uart_sim3_irq_tx_complete(struct device *dev)
 {
 	const struct uart_sim3_config *config = dev->config->config_info;
-	u32_t flags = config->base->CONTROL.reg;
+	u32_t flags = config->base->CONTROL;
 
 	config->base->CONTROL_CLR = UART_CONTROL_TCPTI_Msk;
 
@@ -131,7 +131,7 @@ static int uart_sim3_irq_tx_complete(struct device *dev)
 static int uart_sim3_irq_tx_ready(struct device *dev)
 {
 	const struct uart_sim3_config *config = dev->config->config_info;
-	u32_t flags = config->base->CONTROL.reg;
+	u32_t flags = config->base->CONTROL;
 
 	config->base->CONTROL_CLR = UART_CONTROL_TDREQI_Msk;
 
@@ -155,7 +155,7 @@ static void uart_sim3_irq_rx_disable(struct device *dev)
 static int uart_sim3_irq_rx_full(struct device *dev)
 {
 	const struct uart_sim3_config *config = dev->config->config_info;
-	int flag = config->base->CONTROL.bit.RDREQI;
+	int flag = config->base->CONTROL_b.RDREQI;
 
 	config->base->CONTROL_CLR = UART_CONTROL_RDREQI_Msk;
 	
@@ -166,7 +166,7 @@ static int uart_sim3_irq_rx_ready(struct device *dev)
 {
 	const struct uart_sim3_config *config = dev->config->config_info;
 
-	return config->base->CONTROL.bit.RDREQIEN && uart_sim3_irq_rx_full(dev);
+	return config->base->CONTROL_b.RDREQIEN && uart_sim3_irq_rx_full(dev);
 }
 
 static void uart_sim3_irq_err_enable(struct device *dev)
@@ -218,21 +218,21 @@ static void uart_sim3_init_pins(struct device *dev)
 {
     //const struct uart_sim3_config *config = dev->config->config_info;
 
-	CLKCTRL_0->APBCLKG0.bit.PLL0CEN = 1;
-	CLKCTRL_0->APBCLKG0.bit.PB0CEN = 1;
+	CLKCTRL0->APBCLKG0_b.PLL0CEN = 1;
+	CLKCTRL0->APBCLKG0_b.PB0CEN = 1;
 
 	//PB1 is on XBAR 0
-	PBCFG_0->XBAR0H.bit.XBAR0EN = 1;
+	PBCFG0->XBAR0H_b.XBAR0EN = 1;
 
 	//skip all on PB0
-	PBSTD_0->PBSKIPEN_SET = PBSTD_PBSKIPEN_PBSKIPEN_Msk;
+	PBSTD0->PBSKIPEN_SET = PBSTD_PBSKIPEN_PBSKIPEN_Msk;
 
         //skip all on PB1
-	PBSTD_1->PBSKIPEN_SET = PBSTD_PBSKIPEN_PBSKIPEN_Msk;
+	PBSTD1->PBSKIPEN_SET = PBSTD_PBSKIPEN_PBSKIPEN_Msk;
 	
 	// PB1.12 RX CP210X
 	// PB1.13 TX CP210X
-	PBSTD_1->PBSKIPEN_CLR = (1U << 12) | (1U << 13);
+	PBSTD1->PBSKIPEN_CLR = (1U << 12) | (1U << 13);
 	
 	// PB1.14 CTS CP210X
 	// PB1.15 RTS CP210X
@@ -240,18 +240,18 @@ static void uart_sim3_init_pins(struct device *dev)
 
 	u8_t pin = 13;
 	//Configure PB1.13 as digital input
-	PBSTD_1->PBOUTMD_CLR = (1U << pin); //recommended for input mode
-	PBSTD_1->PB_SET      = (1U << pin); //recommended for input mode
-	PBSTD_1->PBMDSEL_SET = (1U << pin); //set digital mode
+	PBSTD1->PBOUTMD_CLR = (1U << pin); //recommended for input mode
+	PBSTD1->PB_SET      = (1U << pin); //recommended for input mode
+	PBSTD1->PBMDSEL_SET = (1U << pin); //set digital mode
 
 	pin = 12;
 	//Configure PB1.12 as digital output
 	//PBSTD_1->PB_CLR      = (1U << pin); //set to 0
-	PBSTD_1->PBOUTMD_SET = (1U << pin); //push-pull
-	PBSTD_1->PBMDSEL_SET = (1U << pin); //digital mode
+	PBSTD1->PBOUTMD_SET = (1U << pin); //push-pull
+	PBSTD1->PBMDSEL_SET = (1U << pin); //digital mode
 
 	//enable UART0EN in xbar0
-	PBCFG_0->XBAR0H_SET = PBCFG_0_XBAR0H_UART0EN_Msk;
+	PBCFG0->XBAR0H_SET = PBCFG_XBAR0H_UART0EN_Msk;
 }
 
 //#if defined(ENABLE_FAST_CLOCK) && ENABLE_FAST_CLOCK
@@ -276,12 +276,12 @@ static int uart_sim3_init(struct device *dev)
 	 */
 
 	/* Enable UART clock */
-	CLKCTRL_0->APBCLKG0.bit.UART1CEN = 1;
-	CLKCTRL_0->APBCLKG0.bit.UART0CEN = 1;
+	CLKCTRL0->APBCLKG0_b.UART1CEN = 1;
+	CLKCTRL0->APBCLKG0_b.UART0CEN = 1;
 
 
-	config->base->BAUDRATE.bit.TBAUD = baud;
-	config->base->BAUDRATE.bit.RBAUD = baud;
+	config->base->BAUDRATE_b.TBAUD = baud;
+	config->base->BAUDRATE_b.RBAUD = baud;
 
 	// 8n1 is reset value
 

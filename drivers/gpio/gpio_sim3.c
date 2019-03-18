@@ -47,11 +47,11 @@ static int gpio_sim3_configure(struct device *dev,
 {
 	const struct gpio_sim3_config *config = dev->config->config_info;
 	PBSTD_Type *gpio_base = config->gpio_base;
-	CLKCTRL_0->APBCLKG0.bit.PLL0CEN = 1;
-	CLKCTRL_0->APBCLKG0.bit.PB0CEN = 1;
+	CLKCTRL0->APBCLKG0_b.PLL0CEN = 1;
+	CLKCTRL0->APBCLKG0_b.PB0CEN = 1;
 
-	PBCFG_0->XBAR1.bit.XBAR1EN = 1;
-	PBCFG_0->XBAR0H.bit.XBAR0EN = 1;
+	PBCFG0->XBAR1_b.XBAR1EN = 1;
+	PBCFG0->XBAR0H_b.XBAR0EN = 1;
 
 	/* Check for an invalid pin configuration */
 	if ((flags & GPIO_INT) && (flags & GPIO_DIR_OUT)) {
@@ -80,13 +80,13 @@ static int gpio_sim3_configure(struct device *dev,
 	    gpio_base->PBMDSEL_SET = (1U << pin); //set digital mode
 		if ((flags & GPIO_PUD_MASK) == GPIO_PUD_PULL_UP) {
 		    //only available for complete port
-		    gpio_base->PBDRV.bit.PBPUEN = 1;
+		    gpio_base->PBDRV_b.PBPUEN = 1;
 		} else if ((flags & GPIO_PUD_MASK) == GPIO_PUD_PULL_DOWN) {
 		    //pull down not available by hardware
 		    return -ENOTSUP;
 		} else {
 		    //only available for complete port
-		    gpio_base->PBDRV.bit.PBPUEN = 0;
+		    gpio_base->PBDRV_b.PBPUEN = 0;
 		}
 	} else { /* GPIO_DIR_OUT */
 	    gpio_base->PB_CLR      = (1U << pin); //set to 0
@@ -127,7 +127,7 @@ static int gpio_sim3_write(struct device *dev,
 		}
 	} else { /* GPIO_ACCESS_BY_PORT */
 		/* Write the data output for all the pins */
-		gpio_base->PB.bit.PB = value;
+		gpio_base->PB_b.PB = value;
 	}
 
 	return 0;
@@ -139,7 +139,7 @@ static int gpio_sim3_read(struct device *dev,
 	const struct gpio_sim3_config *config = dev->config->config_info;
 	PBSTD_Type *gpio_base = config->gpio_base;
 
-	*value = gpio_base->PBPIN.bit.PBPIN;
+	*value = gpio_base->PBPIN_b.PBPIN;
 
 	if (access_op == GPIO_ACCESS_BY_PIN) {
 		*value = (*value & BIT(pin)) >> pin;
@@ -212,7 +212,7 @@ static void gpio_sim3_common_isr(void *arg)
 		port_data = port_dev->driver_data;
 		config = port_dev->config->config_info;
 		gpio_base = config->gpio_base;
-		int_status = ~(gpio_base->PM.reg ^ gpio_base->PBPIN.reg);
+		int_status = ~(gpio_base->PM ^ gpio_base->PBPIN);
 		enabled_int = int_status & port_data->pin_callback_enables;
 		int_status &= ~enabled_int;
 
