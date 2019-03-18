@@ -263,8 +263,10 @@ static void uart_sim3_init_pins(struct device *dev)
 #define CALC_BAUDRATE(baudrate)					\
     (u32_t)((u32_t)(SystemCoreClock / (N * (u32_t)baudrate)) -1 )
 
- //#define CALC_BAUDRATE(baudrate)				\
- //   (u32_t)((u32_t)(20000000 / (N * (u32_t)baudrate)) -1 )
+#if 0
+#define CALC_BAUDRATE(baudrate)				\
+   (u32_t)((u32_t)(20000000 / (N * (u32_t)baudrate)) -1 )
+#endif
 
 static int uart_sim3_init(struct device *dev)
 {
